@@ -1,0 +1,10 @@
+{
+  "name": "time-tags",
+  "version": "0.0.1",
+  "description": "Low-granularity time tracking for a small number of goals",
+  "main": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "aws-sdk": "^2.577.0"
+  }
+}
