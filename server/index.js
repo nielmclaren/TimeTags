@@ -1,25 +1,25 @@
 exports.handler = async event => {
   switch (event.context["resource-path"]) {
-    case "/logs":
-      return handleLogs(event);
+    case "/entries":
+      return handleEntries(event);
     default:
       return handleDefault(event);
   }
 };
 
-function handleLogs(event) {
+function handleEntries(event) {
   switch (event.context["http-method"]) {
     case "GET":
-      return handleLogsGet(event);
+      return handleEntriesGet(event);
     default:
       return handleDefault();
   }
 }
 
-function handleLogsGet(event) {
+function handleEntriesGet(event) {
   const response = {
     statusCode: 200,
-    body: JSON.stringify("Here are your logs!"),
+    body: JSON.stringify("Here are your entries!"),
   };
   return response;
 }

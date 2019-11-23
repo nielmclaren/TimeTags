@@ -7,8 +7,8 @@ package:
 	mkdir -p `pwd`/dist
 	docker run -v `pwd`/dist:/dist $(BUILD_IMAGE) ./scripts/package.sh
 
-invoke_get_logs:
-	aws lambda invoke --function-name timeTags --payload '{ "context": { "http-method": "GET", "resource-path": "/logs" } }' $(OUTPUT_FILE)
+invoke_get_entries:
+	aws lambda invoke --function-name timeTags --payload '{ "context": { "http-method": "GET", "resource-path": "/entries" } }' $(OUTPUT_FILE)
 	@echo "Response saved to $(OUTPUT_FILE)"
 
 invoke_get_reports:
