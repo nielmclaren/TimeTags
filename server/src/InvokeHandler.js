@@ -1,35 +1,34 @@
 class InvokeHandler {
-  constructor({ dynamoDb }) {
+  constructor({ dynamoDb, invokeEventFactory }) {
     this._dynamoDb = dynamoDb;
+    this._invokeEventFactory = invokeEventFactory;
   }
 
   async handle(event) {
-    if (event.context) {
-      const path = event.context["resource-path"];
-      if (this.isEntriesPath(path)) {
-        return await this.handleEntries(event);
-      }
+    const invokeEvent = this._invokeEventFactory.create(event);
+    if (this.isEntriesPath(invokeEvent.path)) {
+      return await this.handleEntries(invokeEvent);
     }
-    return this.handleDefault(event);
+    return this.handleDefault(invokeEvent);
   }
 
   isEntriesPath(path) {
-    return path.match(/^\/entries/);
+    return path && path.match(/^\/entries/);
   }
 
-  async handleEntries(event) {
-    switch (event.context["http-method"]) {
+  async handleEntries(invokeEvent) {
+    switch (invokeEvent.method) {
       case "GET":
-        return await this.handleEntriesGet(event);
+        return await this.handleEntriesGet(invokeEvent);
       case "PUT":
-        return await this.handleEntriesPut(event);
+        return await this.handleEntriesPut(invokeEvent);
       default:
         return this.handleDefault();
     }
   }
 
-  async handleEntriesGet(event) {
-    const entryDate = this.getEntryDate(event);
+  async handleEntriesGet(invokeEvent) {
+    const entryDate = this.getEntryDate(invokeEvent);
     const params = {
       TableName: "TimeTagsEntries",
       Key: {
@@ -49,17 +48,17 @@ class InvokeHandler {
     return response;
   }
 
-  getEntryDate(event) {
-    const path = event.context["resource-path"];
+  getEntryDate(invokeEvent) {
+    const path = invokeEvent.path;
     const matches = path.match(/^\/entries\/(\d{4}-\d{2}-\d{2})/);
     if (!matches) {
-      throw new Error(`Bad request: ${event.context["http-method"]} ${event.context["resource-path"]}`);
+      throw new Error(`Bad request: ${invokeEvent.method} ${invokeEvent.path}`);
     }
     return matches[1];
   }
 
-  async handleEntriesPut(event) {
-    const { entryDate, entryText } = JSON.parse(event.context["body-json"]);
+  async handleEntriesPut(invokeEvent) {
+    const { entryDate, entryText } = JSON.parse(invokeEvent.body);
 
     if (entryDate === undefined) {
       throw new Error("entryDate parameter is required.");
@@ -78,7 +77,7 @@ class InvokeHandler {
     console.log("Success", data);
   }
 
-  handleDefault(event) {
+  handleDefault(invokeEvent) {
     const response = {
       statusCode: 404,
       body: "Request not found.",
