@@ -9,4 +9,13 @@ describe("InvokeEventFactory", () => {
     expect(invokeEvent.method()).toEqual("DELETE");
     expect(invokeEvent.path()).toEqual("/index.php");
   });
+
+  test("should set missing values to null", () => {
+    const invokeEventFactory = new InvokeEventFactory();
+    const event = {};
+    const invokeEvent = invokeEventFactory.create(event);
+    expect(invokeEvent.body()).toEqual(null);
+    expect(invokeEvent.method()).toEqual(null);
+    expect(invokeEvent.path()).toEqual(null);
+  });
 });

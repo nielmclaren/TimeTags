@@ -25,6 +25,10 @@ class InvokeEvent {
       this._body = JSON.parse(context["body-json"]);
       this._method = context["http-method"];
       this._path = context["resource-path"];
+    } else {
+      this._body = null;
+      this._method = null;
+      this._path = null;
     }
   }
 }
@@ -36,7 +40,9 @@ class InvokeEventFactory {
 
   create(jsonEvent) {
     const invokeEvent = new InvokeEvent(this._dependencies);
-    invokeEvent._updateFromJson(jsonEvent);
+    if (jsonEvent) {
+      invokeEvent._updateFromJson(jsonEvent);
+    }
     return invokeEvent;
   }
 }
