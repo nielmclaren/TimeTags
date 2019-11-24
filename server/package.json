@@ -6,5 +6,8 @@
   "scripts": {},
   "dependencies": {
     "aws-sdk": "^2.577.0"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0"
   }
 }
