@@ -6,7 +6,7 @@ class InvokeHandler {
 
   async handle(event) {
     const invokeEvent = this._invokeEventFactory.create(event);
-    if (this.isEntriesPath(invokeEvent.path)) {
+    if (this.isEntriesPath(invokeEvent.path())) {
       return await this.handleEntries(invokeEvent);
     }
     return this.handleDefault(invokeEvent);
@@ -17,7 +17,7 @@ class InvokeHandler {
   }
 
   async handleEntries(invokeEvent) {
-    switch (invokeEvent.method) {
+    switch (invokeEvent.method()) {
       case "GET":
         return await this.handleEntriesGet(invokeEvent);
       case "PUT":
@@ -49,16 +49,16 @@ class InvokeHandler {
   }
 
   getEntryDate(invokeEvent) {
-    const path = invokeEvent.path;
+    const path = invokeEvent.path();
     const matches = path.match(/^\/entries\/(\d{4}-\d{2}-\d{2})/);
     if (!matches) {
-      throw new Error(`Bad request: ${invokeEvent.method} ${invokeEvent.path}`);
+      throw new Error(`Bad request: ${invokeEvent.method()} ${invokeEvent.path()}`);
     }
     return matches[1];
   }
 
   async handleEntriesPut(invokeEvent) {
-    const { entryDate, entryText } = JSON.parse(invokeEvent.body);
+    const { entryDate, entryText } = JSON.parse(invokeEvent.body());
 
     if (entryDate === undefined) {
       throw new Error("entryDate parameter is required.");

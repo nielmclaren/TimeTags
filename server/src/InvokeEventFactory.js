@@ -1,16 +1,22 @@
 class InvokeEvent {
   constructor() {}
 
-  get body() {
-    return this._body;
+  body(value) {
+    if (!arguments.length) return this._body;
+    this._body = value;
+    return this;
   }
 
-  get method() {
-    return this._method;
+  method(value) {
+    if (!arguments.length) return this._method;
+    this._method = value;
+    return this;
   }
 
-  get path() {
-    return this._path;
+  path(value) {
+    if (!arguments.length) return this._path;
+    this._path = value;
+    return this;
   }
 
   _updateFromJson(json) {
