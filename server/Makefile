@@ -7,6 +7,9 @@ package:
 	mkdir -p `pwd`/dist
 	docker run -v `pwd`/dist:/dist $(BUILD_IMAGE) ./scripts/package.sh
 
+publish:
+	aws lambda update-function-code --function-name timeTags --zip-file fileb://dist/dist.zip
+
 invoke_get_entries:
 	aws lambda invoke --function-name timeTags --payload '{ "context": { "http-method": "GET", "resource-path": "/entries" } }' $(OUTPUT_FILE)
 	@echo "Response saved to $(OUTPUT_FILE)"
