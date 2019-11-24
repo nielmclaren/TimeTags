@@ -5,7 +5,7 @@ const ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
 exports.handler = async event => {
   const path = event.context["resource-path"];
   if (isEntriesPath(path)) {
-    return handleEntries(event);
+    return await handleEntries(event);
   }
   return handleDefault(event);
 };
@@ -14,18 +14,18 @@ function isEntriesPath(path) {
   return path.match(/^\/entries/);
 }
 
-function handleEntries(event) {
+async function handleEntries(event) {
   switch (event.context["http-method"]) {
     case "GET":
-      return handleEntriesGet(event);
+      return await handleEntriesGet(event);
     case "PUT":
-      return handleEntriesPut(event);
+      return await handleEntriesPut(event);
     default:
       return handleDefault();
   }
 }
 
-function handleEntriesGet(event) {
+async function handleEntriesGet(event) {
   const entryDate = getEntryDate(event);
   const params = {
     TableName: "TimeTagsEntries",
@@ -35,13 +35,8 @@ function handleEntriesGet(event) {
     ProjectionExpression: "EntryDate, EntryText",
   };
 
-  ddb.getItem(params, (err, data) => {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      console.log("Success", data.Item);
-    }
-  });
+  const data = await ddb.getItem(params).promise();
+  console.log("Success", data.Item);
 
   const response = {
     statusCode: 200,
@@ -60,7 +55,7 @@ function getEntryDate(event) {
   return matches[1];
 }
 
-function handleEntriesPut(event) {
+async function handleEntriesPut(event) {
   const { entryDate, entryText } = JSON.parse(event.context["body-json"]);
 
   if (entryDate === undefined) {
@@ -76,13 +71,8 @@ function handleEntriesPut(event) {
   };
 
   console.log("Putting item", params);
-  ddb.putItem(params, (error, data) => {
-    if (error) {
-      console.log("Error", error);
-    } else {
-      console.log("Success", data);
-    }
-  });
+  const data = await ddb.putItem(params).promise();
+  console.log("Success", data);
 }
 
 function handleDefault(event) {
