@@ -24,7 +24,7 @@ describe("EntriesRequestHandler", () => {
 
   test("should handle put request", async () => {
     invokeEvent
-      .body('{ "entryDate": "2016-01-08", "entryText": "Entry text" }')
+      .body({ entryDate: "2016-01-08", entryText: "Entry text" })
       .method("PUT")
       .path("/entries/2016-01-08");
     expect(await entriesRequestHandler.handle(invokeEvent)).toBeDefined();

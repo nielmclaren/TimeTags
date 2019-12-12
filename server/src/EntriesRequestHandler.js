@@ -29,12 +29,13 @@ class EntriesRequestHandler {
       ProjectionExpression: "EntryDate, EntryText",
     };
 
+    console.log("Getting item", params);
     const data = await this._dynamoDb.getItem(params).promise();
-    console.log("Success", data.Item);
+    console.log("EntriesRequestHandler GET succeeded", data.Item);
 
     const response = {
       statusCode: 200,
-      body: JSON.stringify("Here are your entries!"),
+      body: JSON.stringify("EntriesRequestHandler GET succeeded"),
     };
 
     return response;
@@ -50,7 +51,7 @@ class EntriesRequestHandler {
   }
 
   async _handlePut(invokeEvent) {
-    const { entryDate, entryText } = JSON.parse(invokeEvent.body());
+    const { entryDate, entryText } = invokeEvent.body();
 
     if (entryDate === undefined) {
       throw new Error("entryDate parameter is required.");
@@ -66,11 +67,11 @@ class EntriesRequestHandler {
 
     console.log("Putting item", params);
     const data = await this._dynamoDb.putItem(params).promise();
-    console.log("Success", data);
+    console.log("EntriesRequestHandler PUT succeeded", data);
 
     const response = {
       statusCode: 200,
-      body: JSON.stringify("Put succeeded."),
+      body: JSON.stringify("EntriesRequestHandler PUT succeeded"),
     };
 
     return response;
