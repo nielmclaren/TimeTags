@@ -10,6 +10,15 @@ describe("InvokeEventFactory", () => {
     expect(invokeEvent.path()).toEqual("/index.php");
   });
 
+  test("should correctly parse partial event json", () => {
+    const invokeEventFactory = new InvokeEventFactory();
+    const event = { context: { "http-method": "GET", "resource-path": "/entries/2016-01-08" } };
+    const invokeEvent = invokeEventFactory.create(event);
+    expect(invokeEvent.body()).toEqual(null);
+    expect(invokeEvent.method()).toEqual("GET");
+    expect(invokeEvent.path()).toEqual("/entries/2016-01-08");
+  });
+
   test("should set missing values to null", () => {
     const invokeEventFactory = new InvokeEventFactory();
     const event = {};

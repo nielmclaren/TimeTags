@@ -22,9 +22,9 @@ class InvokeEvent {
   _updateFromJson(json) {
     if (json.context) {
       const { context } = json;
-      this._body = JSON.parse(context["body-json"]);
-      this._method = context["http-method"];
-      this._path = context["resource-path"];
+      this._body = context["body-json"] ? JSON.parse(context["body-json"]) : null;
+      this._method = context["http-method"] || null;
+      this._path = context["resource-path"] || null;
     } else {
       this._body = null;
       this._method = null;
