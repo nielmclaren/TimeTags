@@ -30,6 +30,14 @@ describe("EntriesRequestHandler", () => {
     expect(await entriesRequestHandler.handle(invokeEvent)).toBeDefined();
   });
 
+  test("should throw error for put request with mismatched entry dates", async () => {
+    invokeEvent
+      .body({ entryDate: "2016-01-08", entryText: "Entry text" })
+      .method("PUT")
+      .path("/entries/2018-12-25");
+    await expect(entriesRequestHandler.handle(invokeEvent)).rejects.toThrow();
+  });
+
   test("should ignore requests for other paths", async () => {
     invokeEvent.path("/admin.php");
     expect(await entriesRequestHandler.handle(invokeEvent)).not.toBeDefined();

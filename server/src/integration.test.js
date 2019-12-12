@@ -31,11 +31,22 @@ describe("Integration test", () => {
   test("should handle put entry", async () => {
     const event = {
       context: {
-        "body-json": '{ "entryDate": "2016-01-08", "entryText": "Entry text" }',
+        "body-json": '{ "entryDate": "2019-11-23", "entryText": "Entry text" }',
         "http-method": "PUT",
         "resource-path": "/entries/2019-11-23",
       },
     };
     expect(await invokeHandler.handle(event)).toEqual(expect.objectContaining({ statusCode: 200 }));
+  });
+
+  test("should propagate errors", async () => {
+    const event = {
+      context: {
+        "body-json": '{ "entryDate": "2019-11-23", "entryText": "Entry text" }',
+        "http-method": "PUT",
+        "resource-path": "/entries/2016-01-08",
+      },
+    };
+    await expect(invokeHandler.handle(event)).rejects.toThrow();
   });
 });
