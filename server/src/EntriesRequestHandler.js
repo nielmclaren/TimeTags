@@ -54,15 +54,16 @@ class EntriesRequestHandler {
     const pathEntryDate = this._getEntryDate(invokeEvent);
     const { entryDate, entryText } = invokeEvent.body();
 
-    if (pathEntryDate !== entryDate) {
-      throw new Error("entryDate parameter in the path and the body must match.");
-    }
-
     if (entryDate === undefined) {
       throw new Error("entryDate parameter is required.");
     }
+
     if (entryText === undefined) {
       throw new Error("entryText parameter is required.");
+    }
+
+    if (pathEntryDate !== entryDate) {
+      throw new Error("entryDate parameter in the path and the body must match.");
     }
 
     const params = {
