@@ -24,7 +24,7 @@ describe("EntriesRequestHandler", () => {
 
   test("should handle put request", async () => {
     invokeEvent
-      .body({ entryDate: "2016-01-08", entryText: "Entry text" })
+      .body({ EntryDate: "2016-01-08", EntryText: "Entry text" })
       .method("PUT")
       .path("/entries/2016-01-08");
     expect(await entriesRequestHandler.handle(invokeEvent)).toBeDefined();
@@ -32,7 +32,7 @@ describe("EntriesRequestHandler", () => {
 
   test("should throw error for put request with mismatched entry dates", async () => {
     invokeEvent
-      .body({ entryDate: "2016-01-08", entryText: "Entry text" })
+      .body({ EntryDate: "2016-01-08", EntryText: "Entry text" })
       .method("PUT")
       .path("/entries/2018-12-25");
     await expect(entriesRequestHandler.handle(invokeEvent)).rejects.toThrow();

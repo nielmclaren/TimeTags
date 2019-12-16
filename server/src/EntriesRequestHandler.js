@@ -32,10 +32,11 @@ class EntriesRequestHandler {
     console.log("Getting item", params);
     const data = await this._dynamoDb.getItem(params).promise();
     console.log("EntriesRequestHandler GET succeeded", data.Item);
+    const entry = { EntryDate: data.Item.EntryDate, EntryText: data.Item.EntryText };
 
     const response = {
       statusCode: 200,
-      body: JSON.stringify("EntriesRequestHandler GET succeeded"),
+      body: JSON.stringify(entry),
     };
 
     return response;
@@ -52,18 +53,18 @@ class EntriesRequestHandler {
 
   async _handlePut(invokeEvent) {
     const pathEntryDate = this._getEntryDate(invokeEvent);
-    const { entryDate, entryText } = invokeEvent.body();
+    const { EntryDate: entryDate, EntryText: entryText } = invokeEvent.body();
 
     if (entryDate === undefined) {
-      throw new Error("entryDate parameter is required.");
+      throw new Error("EntryDate parameter is required.");
     }
 
     if (entryText === undefined) {
-      throw new Error("entryText parameter is required.");
+      throw new Error("EntryText parameter is required.");
     }
 
     if (pathEntryDate !== entryDate) {
-      throw new Error("entryDate parameter in the path and the body must match.");
+      throw new Error("EntryDate parameter in the path and the body must match.");
     }
 
     const params = {

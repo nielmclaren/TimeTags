@@ -29,7 +29,7 @@ describe("Integration test", () => {
 
   test("should handle put entry", async () => {
     const event = {
-      body: '{ "entryDate": "2019-11-23", "entryText": "Entry text" }',
+      body: '{ "EntryDate": "2019-11-23", "EntryText": "Entry text" }',
       httpMethod: "PUT",
       path: "/entries/2019-11-23",
     };
@@ -38,7 +38,7 @@ describe("Integration test", () => {
 
   test("should propagate errors", async () => {
     const event = {
-      body: '{ "entryDate": "2019-11-23", "entryText": "Entry text" }',
+      body: '{ "EntryDate": "2019-11-23", "EntryText": "Entry text" }',
       httpMethod: "PUT",
       path: "/entries/2016-01-08",
     };
