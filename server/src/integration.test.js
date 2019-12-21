@@ -1,11 +1,14 @@
 const EntriesRequestHandler = require("./EntriesRequestHandler");
+const EntryFactory = require("./EntryFactory");
 const InvokeEventFactory = require("./InvokeEventFactory");
 const InvokeHandler = require("./InvokeHandler");
+
+const entryFactory = new EntryFactory();
+const invokeEventFactory = new InvokeEventFactory();
 
 describe("Integration test", () => {
   let dynamoDb;
   let entriesRequestHandler;
-  let invokeEventFactory;
   let invokeHandler;
 
   beforeEach(() => {
@@ -13,8 +16,7 @@ describe("Integration test", () => {
       getItem: () => ({ promise: () => Promise.resolve({ Item: {} }) }),
       putItem: () => ({ promise: () => Promise.resolve("dynamodb put succeeded!") }),
     };
-    entriesRequestHandler = new EntriesRequestHandler({ dynamoDb });
-    invokeEventFactory = new InvokeEventFactory();
+    entriesRequestHandler = new EntriesRequestHandler({ dynamoDb, entryFactory });
     invokeHandler = new InvokeHandler({ entriesRequestHandler, invokeEventFactory });
   });
 
@@ -29,7 +31,7 @@ describe("Integration test", () => {
 
   test("should handle put entry", async () => {
     const event = {
-      body: '{ "EntryDate": "2019-11-23", "EntryText": "Entry text" }',
+      body: '{ "entryDate": "2019-11-23", "entryText": "Entry text" }',
       httpMethod: "PUT",
       path: "/entries/2019-11-23",
     };
@@ -38,7 +40,7 @@ describe("Integration test", () => {
 
   test("should propagate errors", async () => {
     const event = {
-      body: '{ "EntryDate": "2019-11-23", "EntryText": "Entry text" }',
+      body: '{ "entryDate": "2019-11-23", "entryText": "Entry text" }',
       httpMethod: "PUT",
       path: "/entries/2016-01-08",
     };

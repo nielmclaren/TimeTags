@@ -4,12 +4,12 @@ describe("InvokeEventFactory", () => {
   test("should correctly parse event json", () => {
     const invokeEventFactory = new InvokeEventFactory();
     const event = {
-      body: JSON.stringify({ EntryDate: "2016-01-08", entryText: "Entry text" }),
+      body: JSON.stringify({ entryDate: "2016-01-08", entryText: "Entry text" }),
       httpMethod: "DELETE",
       path: "/index.php",
     };
     const invokeEvent = invokeEventFactory.create(event);
-    expect(invokeEvent.body()).toEqual({ EntryDate: "2016-01-08", entryText: "Entry text" });
+    expect(invokeEvent.body()).toEqual({ entryDate: "2016-01-08", entryText: "Entry text" });
     expect(invokeEvent.method()).toEqual("DELETE");
     expect(invokeEvent.path()).toEqual("/index.php");
   });

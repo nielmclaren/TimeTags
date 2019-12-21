@@ -1,6 +1,7 @@
 class EntriesRequestHandler {
-  constructor({ dynamoDb }) {
+  constructor({ dynamoDb, entryFactory }) {
     this._dynamoDb = dynamoDb;
+    this._entryFactory = entryFactory;
   }
 
   async handle(invokeEvent) {
@@ -32,11 +33,11 @@ class EntriesRequestHandler {
     console.log("Getting item", params);
     const data = await this._dynamoDb.getItem(params).promise();
     console.log("EntriesRequestHandler GET succeeded", data.Item);
-    const entry = { EntryDate: data.Item.EntryDate, EntryText: data.Item.EntryText };
+    const entry = this._entryFactory.createFromDynamoDb(data.Item);
 
     const response = {
       statusCode: 200,
-      body: JSON.stringify(entry),
+      body: JSON.stringify(entry.toJson()),
     };
 
     return response;
@@ -53,7 +54,7 @@ class EntriesRequestHandler {
 
   async _handlePut(invokeEvent) {
     const pathEntryDate = this._getEntryDate(invokeEvent);
-    const { EntryDate: entryDate, EntryText: entryText } = invokeEvent.body();
+    const { entryDate, entryText } = invokeEvent.body();
 
     if (entryDate === undefined) {
       throw new Error("EntryDate parameter is required.");

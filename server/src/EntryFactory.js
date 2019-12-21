@@ -13,6 +13,13 @@ class Entry {
     return this;
   }
 
+  toJson() {
+    return {
+      entryDate: this._date,
+      entryText: this._text,
+    };
+  }
+
   _updateFromJson(json) {
     console.log("EntryFactory._updateFromJson", "raw json", json);
     this._date = json.entryDate ? json.entryDate : null;

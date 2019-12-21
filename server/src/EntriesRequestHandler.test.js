@@ -1,6 +1,8 @@
+const EntryFactory = require("./EntryFactory");
 const EntriesRequestHandler = require("./EntriesRequestHandler");
 const InvokeEventFactory = require("./InvokeEventFactory");
 
+const entryFactory = new EntryFactory();
 const invokeEventFactory = new InvokeEventFactory();
 
 describe("EntriesRequestHandler", () => {
@@ -13,7 +15,7 @@ describe("EntriesRequestHandler", () => {
       getItem: () => ({ promise: () => Promise.resolve({ Item: {} }) }),
       putItem: () => ({ promise: () => Promise.resolve("dynamodb put succeeded!") }),
     };
-    entriesRequestHandler = new EntriesRequestHandler({ dynamoDb });
+    entriesRequestHandler = new EntriesRequestHandler({ dynamoDb, entryFactory });
     invokeEvent = invokeEventFactory.create();
   });
 
@@ -24,7 +26,7 @@ describe("EntriesRequestHandler", () => {
 
   test("should handle put request", async () => {
     invokeEvent
-      .body({ EntryDate: "2016-01-08", EntryText: "Entry text" })
+      .body({ entryDate: "2016-01-08", entryText: "Entry text" })
       .method("PUT")
       .path("/entries/2016-01-08");
     expect(await entriesRequestHandler.handle(invokeEvent)).toBeDefined();
@@ -32,7 +34,7 @@ describe("EntriesRequestHandler", () => {
 
   test("should throw error for put request with mismatched entry dates", async () => {
     invokeEvent
-      .body({ EntryDate: "2016-01-08", EntryText: "Entry text" })
+      .body({ entryDate: "2016-01-08", entryText: "Entry text" })
       .method("PUT")
       .path("/entries/2018-12-25");
     await expect(entriesRequestHandler.handle(invokeEvent)).rejects.toThrow();
